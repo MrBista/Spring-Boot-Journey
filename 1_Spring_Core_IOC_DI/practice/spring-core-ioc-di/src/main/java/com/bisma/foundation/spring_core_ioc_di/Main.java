@@ -1,7 +1,10 @@
 package com.bisma.foundation.spring_core_ioc_di;
 
 import com.bisma.foundation.spring_core_ioc_di.config.AppConfigAnotation;
+import com.bisma.foundation.spring_core_ioc_di.config.AppConfigJava;
 import com.bisma.foundation.spring_core_ioc_di.controller.HelloController;
+import com.bisma.foundation.spring_core_ioc_di.util.DatabaseConfig;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
@@ -22,5 +25,14 @@ public class Main {
         HelloController contextJavaBasedBean = contextJavaBased.getBean(HelloController.class);
         contextJavaBasedBean.handleRequest("wowo");
         contextJavaBased.close();
+
+        System.out.println("============ life scyle bean basic ====================");
+
+        AnnotationConfigApplicationContext context1 = new AnnotationConfigApplicationContext(AppConfigJava.class);
+        DatabaseConfig dbConfig = context1.getBean(DatabaseConfig.class);
+        System.out.println(dbConfig.getConnection());
+
+
+        context1.close();
     }
 }

@@ -3,6 +3,7 @@ package com.bisma.foundation.spring_core_ioc_di.config;
 import com.bisma.foundation.spring_core_ioc_di.controller.HelloController;
 import com.bisma.foundation.spring_core_ioc_di.service.GreetingService;
 import com.bisma.foundation.spring_core_ioc_di.service.IndoGreatingService;
+import com.bisma.foundation.spring_core_ioc_di.util.DatabaseConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,4 +21,9 @@ public class AppConfigJava {
         return new HelloController(greetingServiceIndo());
     }
 
+
+    @Bean
+    public DatabaseConfig databaseConfig() {
+        return new DatabaseConfig();
+    }
 }
