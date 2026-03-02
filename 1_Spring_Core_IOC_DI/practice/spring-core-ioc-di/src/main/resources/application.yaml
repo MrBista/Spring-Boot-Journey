@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: spring-core-ioc-di
+
+email:
+  username: "mrBista2308"
+  password: "Abc@1234"
+  port: 12234
+  host: "127.0.0.1"
+  ssl: false
+
+db:
+  url: "localhost:8000"
+  user: "db-user"
+  password: "db-password"
+
+
+greeting:
+  word: "Hallo"
+  farewell: "Sampai Jumpa"

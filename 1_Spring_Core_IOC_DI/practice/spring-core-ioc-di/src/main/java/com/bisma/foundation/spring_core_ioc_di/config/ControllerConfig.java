@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class ControllerConfig {
 
     @Bean
-    public HelloControllerNonAnotation helloControllerNonAnotation(@Qualifier("greetingService") GreetingService greetingService) {
+    public HelloControllerNonAnotation helloControllerNonAnotation(@Qualifier("gService") GreetingService greetingService) {
         return new HelloControllerNonAnotation(greetingService);
     }
 }

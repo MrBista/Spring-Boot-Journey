@@ -5,10 +5,13 @@ import com.bisma.foundation.spring_core_ioc_di.config.AppConfigAnotationImport;
 import com.bisma.foundation.spring_core_ioc_di.config.AppConfigJava;
 import com.bisma.foundation.spring_core_ioc_di.controller.HelloController;
 import com.bisma.foundation.spring_core_ioc_di.controller.HelloControllerNonAnotation;
+import com.bisma.foundation.spring_core_ioc_di.service.NotificationService;
 import com.bisma.foundation.spring_core_ioc_di.util.DatabaseConfig;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
+//@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
         System.out.println("============ versi Anotation Configuration ============");
@@ -37,14 +40,17 @@ public class Main {
 
 
         System.out.println("============ Import Scan Based ====================");
-        AnnotationConfigApplicationContext annotationConfigApplicationContext =
-                new AnnotationConfigApplicationContext(AppConfigAnotationImport.class);
+        ApplicationContext annotationConfigApplicationContext = SpringApplication.run(AppConfigAnotationImport.class, args);
 
        HelloControllerNonAnotation helloControllerNonAnotation =  annotationConfigApplicationContext.getBean(HelloControllerNonAnotation.class);
 
        helloControllerNonAnotation.handleRequest("BoyMan");
 
-        annotationConfigApplicationContext.close();
+        NotificationService notificationService = annotationConfigApplicationContext.getBean(NotificationService.class);
+        notificationService.send("bismbratha", "Hai ini pesan");
+
+
+
 
     }
 }
