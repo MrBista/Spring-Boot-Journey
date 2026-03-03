@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: "aop-learn"
+
+email:
+  port: 20
+  host: "localhost"
+  username: "mrbista2308"
+  password: "Abc@1234"
