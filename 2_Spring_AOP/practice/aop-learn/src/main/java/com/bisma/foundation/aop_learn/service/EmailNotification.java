@@ -15,7 +15,9 @@ public class EmailNotification implements NotificationService{
 
     @Override
     public void send(String to, String message) {
-
+        System.out.println("Send notif to : " + to);
+        System.out.println("host : " + host + " port: " + port + " username: " + username);
+        System.out.println("Message: " + message);
     }
 
     public int getPort() {

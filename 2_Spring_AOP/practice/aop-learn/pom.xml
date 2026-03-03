@@ -46,6 +46,11 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		<!-- Logging (agar tidak banyak warning di console) -->
 <!--		<dependency>-->
 <!--			<groupId>org.slf4j</groupId>-->
