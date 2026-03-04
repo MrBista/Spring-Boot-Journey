@@ -1,6 +1,8 @@
 package com.bisma.foundation.aop_learn.aop;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -25,6 +27,28 @@ public class LoggingAspect {
 
         log.info("[BEFORE] {}.{}() dipnaggil dengan args {}",
                 className, methodName, Arrays.toString(args));
+    }
+
+
+    @Around("execution(* com.bisma.foundation.aop_learn.service.*.*(..))")
+    public Object logAround(ProceedingJoinPoint pjp) throws Throwable {
+        String methodName = pjp.getSignature().getName();
+
+        long start = System.currentTimeMillis();
+        log.info("[AROUND] waktu start eksekusi {}", start);
+
+        Object result;
+        try{
+            result = pjp.proceed();
+        } catch (Throwable e) {
+            log.error("[AROUND] Exception di {}:{}", methodName, e.getMessage());
+            throw e;
+        }finally {
+            long elapsed = System.currentTimeMillis() - start;
+            log.info("[AROUND] waktu selesai eksekusi {}", elapsed);
+        }
+
+        return result;
     }
 
 
