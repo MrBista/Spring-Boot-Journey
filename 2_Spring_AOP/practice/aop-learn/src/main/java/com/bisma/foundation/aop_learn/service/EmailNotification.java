@@ -1,5 +1,7 @@
 package com.bisma.foundation.aop_learn.service;
 
+import com.bisma.foundation.aop_learn.anotation.Loggable;
+
 public class EmailNotification implements NotificationService{
     private final int port;
     private final String host;
@@ -13,6 +15,7 @@ public class EmailNotification implements NotificationService{
         this.password = password;
     }
 
+    @Loggable(logResult = false, value = "methodKirimNotif")
     @Override
     public void send(String to, String message) {
         System.out.println("Send notif to : " + to);

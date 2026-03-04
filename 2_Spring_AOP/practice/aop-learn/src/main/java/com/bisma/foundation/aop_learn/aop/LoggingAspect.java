@@ -1,5 +1,6 @@
 package com.bisma.foundation.aop_learn.aop;
 
+import com.bisma.foundation.aop_learn.anotation.Loggable;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -83,6 +84,33 @@ public class LoggingAspect {
     )
     public void logErrorThrow(JoinPoint jp, Exception ex) {
         log.error("[AFTER THROWING] method {} melempar error {}", jp.getSignature().getName(), ex.getMessage());
+    }
+
+
+    @Around("@annotation(loggable)")
+    public Object logAnotation(ProceedingJoinPoint pjp, Loggable loggable) throws Throwable {
+
+        String methodName = pjp.getSignature().getName();
+
+        String label = loggable.value().isEmpty() ? methodName : loggable.value();
+
+
+
+        if (loggable.logArgs()) {
+            log.info("[LOGGABLE] method {} dipanggil dengan args {}", label, Arrays.toString(pjp.getArgs()));
+        }else {
+            log.info("[LOGGABLE] method {} dipanggil ", label);
+        }
+
+
+        Object result = pjp.proceed();
+
+        if (loggable.logResult()) {
+            log.info("[LOGGABLE] method {} mengembalikan: {}", label, result);
+        }
+
+        return result;
+
     }
 
 

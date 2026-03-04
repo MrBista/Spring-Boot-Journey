@@ -23,8 +23,10 @@ public class AopLearnApplication {
 			notificationController.sendTrhowTest();
 		}catch (RuntimeException e) {
 			System.out.println("...");
-		}
+		} catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
 
 }
