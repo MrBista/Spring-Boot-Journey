@@ -19,6 +19,12 @@ public class AopLearnApplication {
 
 
 		notificationController.send();
+		try{
+			notificationController.sendTrhowTest();
+		}catch (RuntimeException e) {
+			System.out.println("...");
+		}
+
 	}
 
 }

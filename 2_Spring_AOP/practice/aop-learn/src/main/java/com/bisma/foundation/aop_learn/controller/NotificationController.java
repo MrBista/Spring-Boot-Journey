@@ -15,4 +15,9 @@ public class NotificationController {
         notificationService.send("bisma@mail.com", "Hai Aku Kirim ya");
         return "Success";
     }
+
+
+    public void sendTrhowTest() {
+        throw new RuntimeException("Oopss! terjadi kesalahan");
+    }
 }

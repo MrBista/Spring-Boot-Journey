@@ -2,9 +2,7 @@ package com.bisma.foundation.aop_learn.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,6 +17,11 @@ public class LoggingAspect {
 
     @Before("execution(* com.bisma.foundation.aop_learn.controller.*.*(..))")
     public void logBefore(JoinPoint joinPoint) {
+        /*
+            Berjalan sebelum method target
+            Tidak bisa mencegah eksekusi method (kecuali throw exception)
+            Tidak bisa memodifikasi return value
+         */
 
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getName();
@@ -32,6 +35,14 @@ public class LoggingAspect {
 
     @Around("execution(* com.bisma.foundation.aop_learn.service.*.*(..))")
     public Object logAround(ProceedingJoinPoint pjp) throws Throwable {
+        /*
+            Paling fleksibel — bisa lakukan sebelum DAN sesudah
+            Bisa mencegah eksekusi method asli (tidak panggil pjp.proceed())
+            Bisa memodifikasi args sebelum diteruskan: pjp.proceed(newArgs)
+            Bisa memodifikasi return value
+            Wajib return Object dan throw Throwable
+
+         */
         String methodName = pjp.getSignature().getName();
 
         long start = System.currentTimeMillis();
@@ -50,6 +61,31 @@ public class LoggingAspect {
 
         return result;
     }
+
+    @AfterReturning(
+            pointcut = "execution(* com.bisma.foundation.aop_learn.controller.*.*(..))",
+            returning = "res"
+
+    )
+    public void logReturningVal(JoinPoint jp, Object res) {
+        /*
+            Hanya berjalan jika method tidak throw exception
+            Bisa mengakses return value via parameter returning
+            Tidak bisa mengubah return value
+         */
+        log.info("[AFTER RETURNING] method {} return value {}",jp.getSignature().getName(), res);
+    }
+
+
+    @AfterThrowing(
+            pointcut = "execution(* com.bisma.foundation.aop_learn.controller.*.*(..))",
+            throwing = "ex"
+    )
+    public void logErrorThrow(JoinPoint jp, Exception ex) {
+        log.error("[AFTER THROWING] method {} melempar error {}", jp.getSignature().getName(), ex.getMessage());
+    }
+
+
 
 
 }
