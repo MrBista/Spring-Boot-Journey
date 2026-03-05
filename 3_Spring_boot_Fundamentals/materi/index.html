@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Boot Day 1 — Dari Nol Sampai Paham</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --surface: #111720;
+    --surface2: #161d2a;
+    --border: #1e2d42;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #7c5cbf;
+    --text: #e2e8f0;
+    --text-dim: #7a8fa6;
+    --text-bright: #ffffff;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --code-bg: #0d1520;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #0a0e14 0%, #0f1d35 50%, #0a0e14 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    right: -10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,92,191,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .day-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .day-badge::before { content: '▶'; font-size: 8px; }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 30px;
+  }
+  .toc-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toc-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .toc-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* SECTIONS */
+  .section {
+    margin-top: 60px;
+    scroll-margin-top: 20px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.25);
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin: 28px 0 12px;
+  }
+  p { margin-bottom: 14px; color: var(--text); }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .card-accent-green { border-left: 3px solid var(--accent); }
+  .card-accent-orange { border-left: 3px solid var(--accent2); }
+  .card-accent-purple { border-left: 3px solid var(--accent3); }
+  .card-accent-blue { border-left: 3px solid var(--blue); }
+
+  /* ANALOGY BOX */
+  .analogy {
+    background: linear-gradient(135deg, rgba(0,212,170,0.05), rgba(124,92,191,0.05));
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .analogy-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* WARNING / INFO BOX */
+  .box {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 15px;
+  }
+  .box-info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); }
+  .box-warn { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); }
+  .box-success { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
+  .box-danger { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
+  .box-label {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .box-info .box-label { color: var(--blue); }
+  .box-warn .box-label { color: var(--yellow); }
+  .box-success .box-label { color: var(--green); }
+  .box-danger .box-label { color: var(--red); }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-filename {
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  .code-lang {
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,212,170,0.1);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .code-body {
+    padding: 18px 20px;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text);
+  }
+  /* syntax colors */
+  .kw { color: #c792ea; }
+  .ann { color: #ffcb6b; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .cls { color: #82aaff; }
+  .met { color: #82aaff; }
+  .prop { color: #00d4aa; }
+  .xml-tag { color: #f07178; }
+  .xml-attr { color: #ffcb6b; }
+  .xml-val { color: #c3e88d; }
+  .path { color: #89ddff; }
+
+  /* COMPARISON TABLE */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .compare-table th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-bright);
+    border: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  .compare-table tr:hover td { background: rgba(0,212,170,0.04); }
+  .td-spring { color: #f87171; }
+  .td-boot { color: var(--green); }
+
+  /* STEP LIST */
+  .steps { list-style: none; counter-reset: step-counter; }
+  .steps li {
+    counter-increment: step-counter;
+    position: relative;
+    padding: 16px 16px 16px 56px;
+    margin-bottom: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    background: rgba(0,212,170,0.15);
+    border: 1px solid rgba(0,212,170,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* DIAGRAM */
+  .diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* QUIZ */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 16px;
+    font-size: 16px;
+    color: var(--text-bright);
+  }
+  .quiz-opts { list-style: none; }
+  .quiz-opts li {
+    margin-bottom: 8px;
+  }
+  .quiz-opts label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .quiz-opts label:hover { border-color: var(--accent); background: rgba(0,212,170,0.05); }
+  .quiz-opts input[type="radio"] { margin-top: 2px; accent-color: var(--accent); }
+  .quiz-btn {
+    margin-top: 14px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .quiz-btn:hover { opacity: 0.85; }
+  .quiz-result { margin-top: 12px; font-size: 14px; padding: 10px 14px; border-radius: 6px; display: none; }
+  .quiz-result.correct { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
+  .quiz-result.wrong { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0;
+  }
+  .progress-label { font-size: 13px; color: var(--text-dim); white-space: nowrap; }
+  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent3)); border-radius: 2px; transition: width 0.5s; }
+
+  /* COLLAPSIBLE */
+  .collapsible { margin: 12px 0; }
+  .collapsible-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+  }
+  .collapsible-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .collapsible-arrow { transition: transform 0.25s; font-size: 12px; }
+  .collapsible-btn.open .collapsible-arrow { transform: rotate(180deg); }
+  .collapsible-content {
+    display: none;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    font-size: 14px;
+  }
+  .collapsible-content.show { display: block; }
+
+  /* HIGHLIGHT */
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl-orange { color: var(--accent2); font-weight: 600; }
+  .hl-purple { color: var(--accent3); }
+  .hl-blue { color: var(--blue); }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .tag-green { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .tag-purple { background: rgba(124,92,191,0.1); color: #a78bda; border: 1px solid rgba(124,92,191,0.3); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 8px 0;
+    padding-left: 28px;
+    position: relative;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '○';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .checklist li.done::before { content: '✓'; color: var(--green); }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+  .flow-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .flow-arrow {
+    color: var(--text-dim);
+    padding: 0 8px;
+    font-size: 16px;
+  }
+  .flow-node.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,170,0.07); }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero, .container { padding-left: 20px; padding-right: 20px; }
+    .flow { flex-direction: column; align-items: flex-start; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="day-badge">Day 1 of Spring Boot</div>
+    <h1>Dari <span>Nol</span> Sampai<br>Paham Spring Boot</h1>
+    <p class="hero-sub">Bukan sekadar copy-paste. Kita bedah setiap baris kode supaya tidak ada yang terasa "magic".</p>
+    <div class="toc-pills">
+      <a href="#s1" class="toc-pill">① Apa itu Spring Boot?</a>
+      <a href="#s2" class="toc-pill">② Spring vs Spring Boot</a>
+      <a href="#s3" class="toc-pill">③ Auto-configuration</a>
+      <a href="#s4" class="toc-pill">④ Starter Projects</a>
+      <a href="#s5" class="toc-pill">⑤ Spring Initializr</a>
+      <a href="#s6" class="toc-pill">⑥ Struktur Proyek</a>
+      <a href="#s7" class="toc-pill">⑦ Hello World</a>
+      <a href="#s8" class="toc-pill">⑧ Exercise</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap" style="margin-top:40px;">
+    <span class="progress-label">Progress Hari Ini</span>
+    <div class="progress-track"><div class="progress-fill" style="width:0%" id="progressBar"></div></div>
+    <span class="progress-label" id="progressPct">0%</span>
+  </div>
+
+  <!-- ===== SECTION 1 ===== -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Apa Itu Spring Boot — dan Kenapa Ada?</h2>
+    </div>
+
+    <p>Sebelum kita menulis satu baris kode pun, kamu harus tahu <em>masalah apa</em> yang Spring Boot selesaikan. Kalau tidak tahu masalahnya, kamu tidak akan menghargai solusinya.</p>
+
+    <div class="analogy">
+      <div class="analogy-label">🎯 Analogi</div>
+      <p style="margin:0">Bayangkan kamu mau bikin kopi. <strong>Spring (framework asli)</strong> adalah seperti membeli biji kopi mentah, roaster sendiri, grinder, portafilter, mesin espresso manual — semuanya perlu di-setup dari nol, disambungkan satu per satu, dikonfigurasi tekanan dan suhunya. <strong>Spring Boot</strong> adalah seperti coffee maker otomatis: kamu tinggal masukkan kopi, tekan tombol, dan kopi jadi. Di balik layar prosesnya sama, tapi setup-nya jauh lebih cepat.</p>
+    </div>
+
+    <h3>Sejarah Singkat</h3>
+    <p>Spring Framework lahir tahun 2002 sebagai alternatif dari EJB (Enterprise JavaBeans) yang sangat kompleks. Spring lebih simpel, tapi seiring waktu, konfigurasinya sendiri menjadi kompleks. Kamu perlu menulis banyak XML, mendaftarkan setiap bean secara manual, dll.</p>
+    <p>Tahun 2014, <strong>Spring Boot 1.0</strong> diluncurkan dengan filosofi: <span class="hl">"Convention over Configuration"</span> — ikuti konvensi standar, dan framework akan otomatis mengkonfigurasi dirinya sendiri.</p>
+
+    <div class="card card-accent-green">
+      <h3 style="margin-top:0">Tiga Filosofi Utama Spring Boot</h3>
+      <p><span class="hl">1. Opinionated Defaults</span> — Spring Boot punya "pendapat" tentang cara terbaik setup sebuah app. Kamu bisa override, tapi defaultnya sudah masuk akal.</p>
+      <p><span class="hl">2. Convention over Configuration</span> — Ikuti konvensi penamaan dan struktur folder, maka kamu tidak perlu config apapun secara manual.</p>
+      <p style="margin-bottom:0"><span class="hl">3. Production-Ready Out of the Box</span> — Metrics, health checks, logging — semua sudah tersedia tanpa setup tambahan.</p>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2 ===== -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Spring vs Spring Boot — Perbedaan Nyata</h2>
+    </div>
+
+    <p>Ini yang sering bikin bingung pemula. Spring Boot <em>bukan</em> pengganti Spring — ia adalah <strong>layer di atas Spring</strong> yang menghilangkan boilerplate.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th>Spring Framework</th>
+          <th>Spring Boot</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Konfigurasi Web Server</td>
+          <td class="td-spring">Manual — deploy ke Tomcat eksternal, butuh web.xml</td>
+          <td class="td-boot">Embedded Tomcat otomatis — langsung run jar</td>
+        </tr>
+        <tr>
+          <td>Dependency Management</td>
+          <td class="td-spring">Kamu tentukan sendiri versi tiap library, rawan konflik</td>
+          <td class="td-boot">BOM (Bill of Materials) — versi sudah dikelola, tidak konflik</td>
+        </tr>
+        <tr>
+          <td>Konfigurasi Bean</td>
+          <td class="td-spring">XML panjang atau @Configuration manual</td>
+          <td class="td-boot">Auto-configuration berdasarkan classpath</td>
+        </tr>
+        <tr>
+          <td>Cara Jalankan</td>
+          <td class="td-spring">Perlu application server (Tomcat, JBoss, dll)</td>
+          <td class="td-boot">java -jar app.jar (self-contained)</td>
+        </tr>
+        <tr>
+          <td>main() method</td>
+          <td class="td-spring">Tidak ada — di-deploy sebagai WAR</td>
+          <td class="td-boot">Ada! SpringApplication.run() sebagai entry point</td>
+        </tr>
+        <tr>
+          <td>Monitoring</td>
+          <td class="td-spring">Perlu setup manual</td>
+          <td class="td-boot">Spring Actuator siap pakai</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-warn">
+      <span class="box-label">⚠ PENTING</span>
+      Spring Boot masih menggunakan Spring di dalamnya. Semua konsep Spring (IoC, DI, AOP) tetap berlaku. Spring Boot hanya menghilangkan konfigurasi yang membosankan.
+    </div>
+
+    <h3>Perbandingan Kode Nyata</h3>
+    <p>Berikut contoh setup Web MVC di <strong>Spring biasa</strong> vs <strong>Spring Boot</strong>:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Spring Framework (manual) — WebConfig.java</span>
+        <span class="code-lang">JAVA</span>
+      </div>
+      <div class="code-body"><span class="cmt">// ❌ Spring biasa — kamu harus tulis semua ini sendiri</span>
+<span class="ann">@Configuration</span>
+<span class="ann">@EnableWebMvc</span>
+<span class="kw">public class</span> <span class="cls">WebConfig</span> <span class="kw">implements</span> <span class="cls">WebMvcConfigurer</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">InternalResourceViewResolver</span> viewResolver() {
+        <span class="cls">InternalResourceViewResolver</span> resolver = <span class="kw">new</span> <span class="cls">InternalResourceViewResolver</span>();
+        resolver.setPrefix(<span class="str">"/WEB-INF/views/"</span>);
+        resolver.setSuffix(<span class="str">".jsp"</span>);
+        <span class="kw">return</span> resolver;
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">DispatcherServlet</span> dispatcherServlet() { ... }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">ServletRegistrationBean</span> servletRegistration() { ... }
+
+    <span class="cmt">// ... masih banyak lagi</span>
+}</div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Spring Boot — HelloApplication.java</span>
+        <span class="code-lang">JAVA</span>
+      </div>
+      <div class="code-body"><span class="cmt">// ✅ Spring Boot — ini CUKUP untuk web app yang berjalan</span>
+<span class="ann">@SpringBootApplication</span>
+<span class="kw">public class</span> <span class="cls">HelloApplication</span> {
+    <span class="kw">public static void</span> main(<span class="cls">String</span>[] args) {
+        <span class="cls">SpringApplication</span>.run(<span class="cls">HelloApplication</span>.<span class="kw">class</span>, args);
+    }
+}</div>
+    </div>
+
+    <p>Keduanya melakukan hal yang sama — tapi Spring Boot mengurus semua konfigurasi di balik layar.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== SECTION 3 ===== -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Auto-Configuration — Bedah Tuntas</h2>
+    </div>
+
+    <p>Ini adalah jantung Spring Boot. Kalau kamu paham ini, tidak ada yang "magic" lagi.</p>
+
+    <h3>Cara Kerja Auto-Configuration</h3>
+
+    <div class="flow">
+      <div class="flow-node active">App Start</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Scan Classpath</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">Cek @Conditional</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node active">Register Beans</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">App Ready</div>
+    </div>
+
+    <p>Spring Boot membaca file khusus bernama <span class="tag tag-orange">spring.factories</span> (Spring Boot 2.x) atau <span class="tag tag-orange">AutoConfiguration.imports</span> (Spring Boot 3.x) yang berisi daftar semua class auto-configuration.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">spring-boot-autoconfigure-3.x.jar → META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</span>
+        <span class="code-lang">TEXT</span>
+      </div>
+      <div class="code-body"><span class="cmt"># Hanya sebagian kecil dari ratusan class yang ada</span>
+<span class="path">org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration</span>
+<span class="path">org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration</span>
+<span class="path">org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration</span>
+<span class="path">org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration</span>
+<span class="path">org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration</span></div>
+    </div>
+
+    <p>Spring Boot akan mencoba menjalankan setiap class itu — tapi class itu dilindungi oleh <span class="hl">@Conditional annotations</span>. Artinya, sebuah konfigurasi hanya akan aktif jika kondisi tertentu terpenuhi.</p>
+
+    <h3>@Conditional Annotations — Kunci Auto-Configuration</h3>
+
+    <div class="card card-accent-purple">
+      <p style="margin-bottom:12px">Mari kita lihat bagaimana <code>DataSourceAutoConfiguration</code> bekerja secara nyata:</p>
+      <div class="code-block" style="margin:0">
+        <div class="code-header">
+          <span class="code-filename">DataSourceAutoConfiguration.java (disederhanakan)</span>
+          <span class="code-lang">JAVA</span>
+        </div>
+        <div class="code-body"><span class="ann">@Configuration</span>
+<span class="ann">@ConditionalOnClass</span>(<span class="cls">DataSource</span>.<span class="kw">class</span>)        <span class="cmt">// ① Hanya aktif jika DataSource ada di classpath</span>
+<span class="ann">@ConditionalOnMissingBean</span>(<span class="cls">DataSource</span>.<span class="kw">class</span>)  <span class="cmt">// ② Hanya aktif jika kamu BELUM buat DataSource sendiri</span>
+<span class="ann">@EnableConfigurationProperties</span>(<span class="cls">DataSourceProperties</span>.<span class="kw">class</span>)
+<span class="kw">public class</span> <span class="cls">DataSourceAutoConfiguration</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">DataSource</span> dataSource(<span class="cls">DataSourceProperties</span> properties) {
+        <span class="cmt">// Otomatis baca dari application.properties:</span>
+        <span class="cmt">// spring.datasource.url, username, password</span>
+        <span class="kw">return</span> properties.initializeDataSourceBuilder().build();
+    }
+}</div>
+      </div>
+    </div>
+
+    <h3>Daftar @Conditional yang Sering Dipakai</h3>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Annotation</th><th>Artinya</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>@ConditionalOnClass</code></td><td>Aktif jika class tertentu ada di classpath (ada dependencynya)</td></tr>
+        <tr><td><code>@ConditionalOnMissingBean</code></td><td>Aktif jika bean tertentu BELUM didaftarkan (kamu bisa override!)</td></tr>
+        <tr><td><code>@ConditionalOnProperty</code></td><td>Aktif jika property tertentu ada di application.properties</td></tr>
+        <tr><td><code>@ConditionalOnWebApplication</code></td><td>Aktif hanya di web application</td></tr>
+        <tr><td><code>@ConditionalOnBean</code></td><td>Aktif jika bean tertentu SUDAH ada</td></tr>
+      </tbody>
+    </table>
+
+    <div class="analogy">
+      <div class="analogy-label">🔍 Insight Penting</div>
+      <p style="margin:0"><span class="hl">@ConditionalOnMissingBean</span> inilah yang memungkinkan kamu <strong>override auto-configuration</strong>. Kalau kamu mendaftarkan bean sendiri (misalnya DataSource kustom), maka Spring Boot tidak akan membuat bean auto-config-nya. Kamu selalu punya kendali penuh.</p>
+    </div>
+
+    <h3>Melihat Auto-Configuration yang Aktif</h3>
+    <p>Tambahkan ini ke <code>application.properties</code> untuk melihat apa yang aktif:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">src/main/resources/application.properties</span>
+        <span class="code-lang">PROPERTIES</span>
+      </div>
+      <div class="code-body"><span class="cmt"># Lihat semua auto-configuration yang aktif dan tidak aktif</span>
+<span class="prop">logging.level.org.springframework.boot.autoconfigure</span>=<span class="str">DEBUG</span>
+
+<span class="cmt"># Atau jalankan dengan flag ini:</span>
+<span class="cmt"># java -jar app.jar --debug</span></div>
+    </div>
+
+    <p>Kamu akan melihat output seperti ini di console:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Console Output (debug mode)</span>
+        <span class="code-lang">LOG</span>
+      </div>
+      <div class="code-body"><span class="cmt">============================
+CONDITIONS EVALUATION REPORT
+============================</span>
+
+<span class="str">Positive matches:</span>      <span class="cmt">← AUTO-CONFIG YANG AKTIF</span>
+  DataSourceAutoConfiguration matched:
+    - @ConditionalOnClass found required classes 'DataSource' (OnClassCondition)
+
+<span class="red">Negative matches:</span>      <span class="cmt">← YANG TIDAK AKTIF (dan kenapa)</span>
+  MongoAutoConfiguration:
+    - @ConditionalOnClass did not find required class 'MongoClient' (OnClassCondition)</div>
+    </div>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz">
+    <p class="quiz-q">🧠 Quick Check: Apa yang terjadi jika kamu mendaftarkan bean <code>DataSource</code> sendiri di kode kamu?</p>
+    <ul class="quiz-opts" id="q1">
+      <li><label><input type="radio" name="q1" value="a"> Spring Boot akan error karena ada dua DataSource</label></li>
+      <li><label><input type="radio" name="q1" value="b"> Spring Boot auto-configuration DataSource TIDAK akan aktif karena @ConditionalOnMissingBean</label></li>
+      <li><label><input type="radio" name="q1" value="c"> Keduanya aktif dan Spring Boot memilih secara random</label></li>
+      <li><label><input type="radio" name="q1" value="d"> Bean kamu diabaikan, auto-config tetap jalan</label></li>
+    </ul>
+    <button class="quiz-btn" onclick="checkQuiz('q1','b','✅ Benar! @ConditionalOnMissingBean memastikan auto-config hanya aktif jika kamu belum punya bean sejenis. Kamu selalu bisa override.')">Cek Jawaban</button>
+    <div class="quiz-result" id="q1-result"></div>
+  </div>
+
+  <!-- ===== SECTION 4 ===== -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Starter Projects — Dependensi Yang Dikurasi</h2>
+    </div>
+
+    <p>Sebelum Spring Boot, kalau mau buat web app dengan JPA, kamu harus manually menambahkan: spring-webmvc, spring-orm, hibernate-core, tomcat-embed, jackson-databind, slf4j, logback, dan banyak lagi — dengan versi yang kompatibel satu sama lain. Sangat menyita waktu.</p>
+
+    <p><strong>Starter project</strong> adalah POM/dependency yang sudah mengemas semua dependensi yang dibutuhkan untuk satu use case tertentu, dengan versi yang sudah diuji kompatibilitasnya.</p>
+
+    <h3>Starter yang Paling Sering Dipakai</h3>
+
+    <div class="card card-accent-green">
+      <div class="code-block" style="margin:0">
+        <div class="code-header">
+          <span class="code-filename">pom.xml — Starter Examples</span>
+          <span class="code-lang">XML</span>
+        </div>
+        <div class="code-body"><span class="cmt">&lt;!-- Untuk Web / REST API --&gt;</span>
+<span class="xml-tag">&lt;dependency&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="xml-tag">&lt;/artifactId&gt;</span>
+<span class="xml-tag">&lt;/dependency&gt;</span>
+<span class="cmt">&lt;!-- ↑ Otomatis include: spring-webmvc, tomcat-embed,
+         jackson-databind, spring-core, spring-context --&gt;</span>
+
+<span class="cmt">&lt;!-- Untuk Database / JPA --&gt;</span>
+<span class="xml-tag">&lt;dependency&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="xml-tag">&lt;/artifactId&gt;</span>
+<span class="xml-tag">&lt;/dependency&gt;</span>
+<span class="cmt">&lt;!-- ↑ Otomatis include: hibernate-core, spring-data-jpa,
+         spring-jdbc, transaction management --&gt;</span>
+
+<span class="cmt">&lt;!-- Untuk Testing --&gt;</span>
+<span class="xml-tag">&lt;dependency&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="xml-tag">&lt;/artifactId&gt;</span>
+    <span class="xml-tag">&lt;scope&gt;</span>test<span class="xml-tag">&lt;/scope&gt;</span>
+<span class="xml-tag">&lt;/dependency&gt;</span>
+<span class="cmt">&lt;!-- ↑ Otomatis include: JUnit 5, Mockito, AssertJ, Spring Test --&gt;</span></div>
+      </div>
+    </div>
+
+    <h3>Bagaimana Versi Dikelola — Spring Boot BOM</h3>
+    <p>Di bagian <code>&lt;parent&gt;</code> pom.xml kamu ada ini:</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">pom.xml — Parent POM</span>
+        <span class="code-lang">XML</span>
+      </div>
+      <div class="code-body"><span class="xml-tag">&lt;parent&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="xml-tag">&lt;/artifactId&gt;</span>
+    <span class="xml-tag">&lt;version&gt;</span><span class="str">3.2.0</span><span class="xml-tag">&lt;/version&gt;</span>  <span class="cmt">&lt;!-- satu versi untuk semuanya --&gt;</span>
+<span class="xml-tag">&lt;/parent&gt;</span>
+
+<span class="cmt">&lt;!-- Karena ada parent di atas, kamu TIDAK perlu tulis versi
+     untuk semua spring dependencies: --&gt;</span>
+<span class="xml-tag">&lt;dependency&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="xml-tag">&lt;/artifactId&gt;</span>
+    <span class="cmt">&lt;!-- tidak perlu &lt;version&gt; -- diwarisi dari parent --&gt;</span>
+<span class="xml-tag">&lt;/dependency&gt;</span></div>
+    </div>
+
+    <div class="box box-info">
+      <span class="box-label">ℹ️ INFO</span>
+      <code>spring-boot-starter-parent</code> mewarisi dari <code>spring-boot-dependencies</code> yang berisi BOM (Bill of Materials) — sebuah daftar ratusan library dengan versi yang sudah diuji kompatibilitasnya. Ini yang memastikan tidak ada dependency conflict.
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5 ===== -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Spring Initializr — Project Scaffolding</h2>
+    </div>
+
+    <p><a href="https://start.spring.io" style="color:var(--accent)">start.spring.io</a> adalah web app resmi untuk generate kerangka proyek Spring Boot. Ini menghemat waktu setup awal secara signifikan.</p>
+
+    <h3>Cara Pakai Spring Initializr</h3>
+    <ol class="steps">
+      <li>Buka <strong>start.spring.io</strong> di browser kamu</li>
+      <li>Pilih <strong>Project</strong>: Maven atau Gradle (rekomendasinya Maven untuk pemula)</li>
+      <li>Pilih <strong>Language</strong>: Java</li>
+      <li>Pilih <strong>Spring Boot version</strong>: Pilih yang stable (bukan SNAPSHOT)</li>
+      <li>Isi <strong>Project Metadata</strong>: Group (<code>com.belajar</code>), Artifact (<code>hello-app</code>), dll</li>
+      <li>Pilih <strong>Dependencies</strong>: Klik "ADD DEPENDENCIES" → cari "Spring Web"</li>
+      <li>Klik <strong>GENERATE</strong> → download ZIP → extract → buka di IDE</li>
+    </ol>
+
+    <h3>Alternatif: Via IntelliJ IDEA</h3>
+    <p>File → New → Project → Spring Initializr (sudah built-in di IntelliJ Ultimate)</p>
+
+    <h3>Alternatif: Via CLI (Spring Boot CLI)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Terminal</span>
+        <span class="code-lang">BASH</span>
+      </div>
+      <div class="code-body"><span class="cmt"># Install Spring Boot CLI dulu</span>
+<span class="prop">spring init</span> --dependencies=web --name=hello-app hello-app
+
+<span class="cmt"># Atau dengan curl langsung dari start.spring.io API</span>
+<span class="prop">curl</span> https://start.spring.io/starter.zip \
+  -d dependencies=web,actuator \
+  -d name=hello-app \
+  -d packageName=com.belajar.hello \
+  -o hello-app.zip</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6 ===== -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Struktur Proyek — Setiap File Punya Makna</h2>
+    </div>
+
+    <p>Setelah kamu generate proyek, kamu akan melihat struktur ini. Mari kita bedah setiap bagiannya:</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Project Structure</div><span class="path">hello-app/</span>
+├── <span class="path">src/</span>
+│   ├── <span class="path">main/</span>
+│   │   ├── <span class="path">java/</span>
+│   │   │   └── <span class="path">com/belajar/hello/</span>
+│   │   │       └── <span class="ann">HelloApplication.java</span>     <span class="cmt">← Entry point aplikasi</span>
+│   │   └── <span class="path">resources/</span>
+│   │       ├── <span class="str">application.properties</span>          <span class="cmt">← Semua konfigurasi di sini</span>
+│   │       ├── <span class="path">static/</span>                         <span class="cmt">← CSS, JS, gambar (served langsung)</span>
+│   │       └── <span class="path">templates/</span>                      <span class="cmt">← Template HTML (Thymeleaf, dll)</span>
+│   └── <span class="path">test/</span>
+│       └── <span class="path">java/</span>
+│           └── <span class="path">com/belajar/hello/</span>
+│               └── <span class="ann">HelloApplicationTests.java</span>  <span class="cmt">← Test class</span>
+├── <span class="red">mvnw</span> / <span class="red">mvnw.cmd</span>                       <span class="cmt">← Maven Wrapper (tidak perlu install Maven)</span>
+├── <span class="xml-tag">.mvn/</span>                                   <span class="cmt">← Config Maven Wrapper</span>
+└── <span class="xml-tag">pom.xml</span>                                 <span class="cmt">← Dependency & build config</span>
+    </div>
+
+    <h3>File-File Penting — Dibedah Satu Per Satu</h3>
+
+    <div class="collapsible">
+      <button class="collapsible-btn" onclick="toggleCollapse(this)">
+        📄 HelloApplication.java — Entry Point <span class="collapsible-arrow">▼</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">HelloApplication.java</span>
+            <span class="code-lang">JAVA</span>
+          </div>
+          <div class="code-body"><span class="kw">package</span> com.belajar.hello;
+
+<span class="kw">import</span> org.springframework.boot.SpringApplication;
+<span class="kw">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;
+
+<span class="ann">@SpringBootApplication</span>  <span class="cmt">// ← Ini satu annotation yang menggabungkan 3 hal:</span>
+<span class="kw">public class</span> <span class="cls">HelloApplication</span> {
+
+    <span class="kw">public static void</span> main(<span class="cls">String</span>[] args) {
+        <span class="cls">SpringApplication</span>.run(<span class="cls">HelloApplication</span>.<span class="kw">class</span>, args);
+        <span class="cmt">// SpringApplication.run() melakukan:</span>
+        <span class="cmt">// 1. Membuat ApplicationContext</span>
+        <span class="cmt">// 2. Menjalankan semua auto-configuration</span>
+        <span class="cmt">// 3. Start embedded web server (Tomcat)</span>
+    }
+}</div>
+        </div>
+        <p style="margin-top:12px; font-size:14px"><strong>@SpringBootApplication</strong> adalah shortcut untuk 3 annotation:</p>
+        <ul style="font-size:14px; padding-left:20px; margin-top:8px">
+          <li><code>@Configuration</code> — class ini sebagai sumber bean definition</li>
+          <li><code>@EnableAutoConfiguration</code> — aktifkan auto-configuration</li>
+          <li><code>@ComponentScan</code> — scan semua @Component, @Service, @Repository di package ini dan sub-package-nya</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-btn" onclick="toggleCollapse(this)">
+        📄 pom.xml — Build Configuration <span class="collapsible-arrow">▼</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">pom.xml</span>
+            <span class="code-lang">XML</span>
+          </div>
+          <div class="code-body"><span class="xml-tag">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="xml-tag">&lt;project&gt;</span>
+  <span class="cmt">&lt;!-- 1. Warisi semua default Spring Boot --&gt;</span>
+  <span class="xml-tag">&lt;parent&gt;</span>
+    <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+    <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="xml-tag">&lt;/artifactId&gt;</span>
+    <span class="xml-tag">&lt;version&gt;</span>3.2.0<span class="xml-tag">&lt;/version&gt;</span>
+  <span class="xml-tag">&lt;/parent&gt;</span>
+
+  <span class="cmt">&lt;!-- 2. Identitas proyek kamu --&gt;</span>
+  <span class="xml-tag">&lt;groupId&gt;</span>com.belajar<span class="xml-tag">&lt;/groupId&gt;</span>
+  <span class="xml-tag">&lt;artifactId&gt;</span>hello-app<span class="xml-tag">&lt;/artifactId&gt;</span>
+  <span class="xml-tag">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="xml-tag">&lt;/version&gt;</span>
+
+  <span class="cmt">&lt;!-- 3. Java version --&gt;</span>
+  <span class="xml-tag">&lt;properties&gt;</span>
+    <span class="xml-tag">&lt;java.version&gt;</span>17<span class="xml-tag">&lt;/java.version&gt;</span>
+  <span class="xml-tag">&lt;/properties&gt;</span>
+
+  <span class="cmt">&lt;!-- 4. Dependency - cukup nama tanpa versi --&gt;</span>
+  <span class="xml-tag">&lt;dependencies&gt;</span>
+    <span class="xml-tag">&lt;dependency&gt;</span>
+      <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+      <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="xml-tag">&lt;/artifactId&gt;</span>
+    <span class="xml-tag">&lt;/dependency&gt;</span>
+  <span class="xml-tag">&lt;/dependencies&gt;</span>
+
+  <span class="cmt">&lt;!-- 5. Plugin untuk build executable JAR --&gt;</span>
+  <span class="xml-tag">&lt;build&gt;</span>
+    <span class="xml-tag">&lt;plugins&gt;</span>
+      <span class="xml-tag">&lt;plugin&gt;</span>
+        <span class="xml-tag">&lt;groupId&gt;</span>org.springframework.boot<span class="xml-tag">&lt;/groupId&gt;</span>
+        <span class="xml-tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="xml-tag">&lt;/artifactId&gt;</span>
+        <span class="cmt">&lt;!-- Plugin ini yang bikin "fat JAR" -- semua dependencies
+             di-bundle jadi satu file JAR yang bisa dijalankan --&gt;</span>
+      <span class="xml-tag">&lt;/plugin&gt;</span>
+    <span class="xml-tag">&lt;/plugins&gt;</span>
+  <span class="xml-tag">&lt;/build&gt;</span>
+<span class="xml-tag">&lt;/project&gt;</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-btn" onclick="toggleCollapse(this)">
+        📄 application.properties — Konfigurasi Aplikasi <span class="collapsible-arrow">▼</span>
+      </button>
+      <div class="collapsible-content">
+        <p style="font-size:14px; margin-bottom:12px">Ini adalah file konfigurasi utama kamu. Spring Boot membaca file ini saat startup dan menggunakannya untuk mengkonfigurasi beans-nya.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">application.properties</span>
+            <span class="code-lang">PROPERTIES</span>
+          </div>
+          <div class="code-body"><span class="cmt"># Port server (default: 8080)</span>
+<span class="prop">server.port</span>=<span class="num">9090</span>
+
+<span class="cmt"># Nama aplikasi</span>
+<span class="prop">spring.application.name</span>=<span class="str">hello-app</span>
+
+<span class="cmt"># Database config (kalau pakai JPA)</span>
+<span class="prop">spring.datasource.url</span>=<span class="str">jdbc:mysql://localhost:3306/mydb</span>
+<span class="prop">spring.datasource.username</span>=<span class="str">root</span>
+<span class="prop">spring.datasource.password</span>=<span class="str">secret</span>
+
+<span class="cmt"># Log level</span>
+<span class="prop">logging.level.com.belajar</span>=<span class="str">DEBUG</span>
+
+<span class="cmt"># Custom property (bisa dibaca di kode via @Value)</span>
+<span class="prop">app.message</span>=<span class="str">Halo dari config!</span></div>
+        </div>
+        <p style="font-size:14px; margin-top:12px">Kamu juga bisa pakai format <code>application.yml</code> — lebih bersih untuk config yang bersarang.</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-btn" onclick="toggleCollapse(this)">
+        📄 mvnw — Maven Wrapper <span class="collapsible-arrow">▼</span>
+      </button>
+      <div class="collapsible-content">
+        <p style="font-size:14px">Maven Wrapper memungkinkan kamu menjalankan Maven <em>tanpa harus install Maven secara global</em>. Ini memastikan semua developer di tim menggunakan versi Maven yang sama.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">Terminal</span><span class="code-lang">BASH</span></div>
+          <div class="code-body"><span class="cmt"># Linux/Mac — pakai mvnw</span>
+<span class="prop">./mvnw</span> spring-boot:run
+
+<span class="cmt"># Windows — pakai mvnw.cmd</span>
+<span class="prop">mvnw.cmd</span> spring-boot:run
+
+<span class="cmt"># Sama seperti: mvn spring-boot:run
+# tapi tidak perlu install mvn di system</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7 ===== -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Build Hello World REST API — Step by Step</h2>
+    </div>
+
+    <p>Sekarang kita bangun REST API sederhana. Kita akan jelaskan setiap baris kodenya.</p>
+
+    <h3>Langkah 1: Buat Controller</h3>
+    <p>Controller adalah class yang menangani HTTP request. Dalam Spring MVC, kita pakai <code>@RestController</code>.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">src/main/java/com/belajar/hello/HelloController.java</span>
+        <span class="code-lang">JAVA</span>
+      </div>
+      <div class="code-body"><span class="kw">package</span> com.belajar.hello;
+
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+<span class="kw">import</span> org.springframework.beans.factory.annotation.Value;
+
+<span class="ann">@RestController</span>              <span class="cmt">// ① = @Controller + @ResponseBody</span>
+                              <span class="cmt">//   Setiap method return value langsung jadi HTTP response body</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/api"</span>)    <span class="cmt">// ② Base URL untuk semua endpoint di class ini</span>
+<span class="kw">public class</span> <span class="cls">HelloController</span> {
+
+    <span class="cmt">// Membaca value dari application.properties</span>
+    <span class="ann">@Value</span>(<span class="str">"${app.message:Halo, Dunia!}"</span>)  <span class="cmt">// ③ Default value setelah ':'</span>
+    <span class="kw">private</span> <span class="cls">String</span> message;
+
+    <span class="cmt">// GET /api/hello</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/hello"</span>)
+    <span class="kw">public</span> <span class="cls">String</span> hello() {
+        <span class="kw">return</span> message;  <span class="cmt">// Spring otomatis serialize ke response body</span>
+    }
+
+    <span class="cmt">// GET /api/hello/{name} — path variable</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/hello/{name}"</span>)
+    <span class="kw">public</span> <span class="cls">String</span> helloName(<span class="ann">@PathVariable</span> <span class="cls">String</span> name) {
+        <span class="kw">return</span> <span class="str">"Halo, "</span> + name + <span class="str">"!"</span>;
+    }
+
+    <span class="cmt">// GET /api/greet?name=Budi — query param</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/greet"</span>)
+    <span class="kw">public</span> <span class="cls">String</span> greet(<span class="ann">@RequestParam</span>(<span class="prop">defaultValue</span>=<span class="str">"Teman"</span>) <span class="cls">String</span> name) {
+        <span class="kw">return</span> <span class="str">"Selamat datang, "</span> + name + <span class="str">"!"</span>;
+    }
+
+    <span class="cmt">// POST /api/hello — terima JSON body</span>
+    <span class="ann">@PostMapping</span>(<span class="str">"/hello"</span>)
+    <span class="kw">public</span> <span class="cls">String</span> createHello(<span class="ann">@RequestBody</span> <span class="cls">HelloRequest</span> request) {
+        <span class="kw">return</span> <span class="str">"Diterima: "</span> + request.getMessage();
+    }
+}</div>
+    </div>
+
+    <h3>Langkah 2: Buat Request DTO (Data Transfer Object)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">src/main/java/com/belajar/hello/HelloRequest.java</span>
+        <span class="code-lang">JAVA</span>
+      </div>
+      <div class="code-body"><span class="kw">package</span> com.belajar.hello;
+
+<span class="cmt">// Simple POJO — Jackson (auto-included via starter-web)
+// akan otomatis convert JSON ↔ Java object</span>
+<span class="kw">public class</span> <span class="cls">HelloRequest</span> {
+    <span class="kw">private</span> <span class="cls">String</span> message;
+
+    <span class="cmt">// Getter & Setter wajib ada untuk Jackson serialization</span>
+    <span class="kw">public</span> <span class="cls">String</span> getMessage() { <span class="kw">return</span> message; }
+    <span class="kw">public void</span> setMessage(<span class="cls">String</span> message) { <span class="kw">this</span>.message = message; }
+}
+
+<span class="cmt">// Atau pakai Java Record (Java 14+) — lebih ringkas:</span>
+<span class="cmt">// public record HelloRequest(String message) {}</span></div>
+    </div>
+
+    <h3>Langkah 3: Tambahkan Config ke application.properties</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">src/main/resources/application.properties</span>
+        <span class="code-lang">PROPERTIES</span>
+      </div>
+      <div class="code-body"><span class="prop">spring.application.name</span>=<span class="str">hello-app</span>
+<span class="prop">server.port</span>=<span class="num">8080</span>
+<span class="prop">app.message</span>=<span class="str">Halo dari Spring Boot!</span></div>
+    </div>
+
+    <h3>Langkah 4: Jalankan Aplikasi</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Terminal</span>
+        <span class="code-lang">BASH</span>
+      </div>
+      <div class="code-body"><span class="cmt"># Cara 1: Via Maven Wrapper</span>
+<span class="prop">./mvnw</span> spring-boot:run
+
+<span class="cmt"># Cara 2: Via IDE — klik kanan HelloApplication.java → Run
+
+# Cara 3: Build dulu, lalu run JAR</span>
+<span class="prop">./mvnw</span> clean package
+<span class="kw">java</span> -jar target/hello-app-0.0.1-SNAPSHOT.jar</div>
+    </div>
+
+    <p>Kamu akan melihat log seperti ini:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Console Output</span>
+        <span class="code-lang">LOG</span>
+      </div>
+      <div class="code-body">  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+<span class="str"> :: Spring Boot ::               (v3.2.0)</span>
+
+<span class="cmt">...Tomcat started on port 8080 (http)...</span>
+<span class="green">Started HelloApplication in 1.234 seconds (process running for 1.567)</span></div>
+    </div>
+
+    <h3>Langkah 5: Test Endpoint</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-filename">Terminal — curl / browser</span>
+        <span class="code-lang">BASH</span>
+      </div>
+      <div class="code-body"><span class="cmt"># Test GET /api/hello</span>
+<span class="kw">curl</span> http://localhost:8080/api/hello
+<span class="str"># Output: Halo dari Spring Boot!</span>
+
+<span class="cmt"># Test GET /api/hello/{name}</span>
+<span class="kw">curl</span> http://localhost:8080/api/hello/Budi
+<span class="str"># Output: Halo, Budi!</span>
+
+<span class="cmt"># Test GET /api/greet?name=Ani</span>
+<span class="kw">curl</span> http://localhost:8080/api/greet?name=Ani
+<span class="str"># Output: Selamat datang, Ani!</span>
+
+<span class="cmt"># Test POST /api/hello</span>
+<span class="kw">curl</span> -X POST http://localhost:8080/api/hello \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"message": "Test POST"}'</span>
+<span class="str"># Output: Diterima: Test POST</span></div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8 ===== -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Exercise — Modifikasi & Observe</h2>
+    </div>
+
+    <p>Sekarang saatnya eksperimen. Tujuannya: <strong>membuktikan sendiri</strong> bahwa kamu paham auto-configuration bukan magic.</p>
+
+    <div class="card card-accent-orange">
+      <h3 style="margin-top:0">🔬 Exercise 1: Override Port via Properties</h3>
+      <p>Ubah port server dari 8080 ke 9090 tanpa menyentuh kode Java.</p>
+      <div class="code-block" style="margin:8px 0 0">
+        <div class="code-header"><span class="code-filename">application.properties</span><span class="code-lang">PROPERTIES</span></div>
+        <div class="code-body"><span class="prop">server.port</span>=<span class="num">9090</span>
+<span class="cmt"># Restart app, lalu akses http://localhost:9090/api/hello</span></div>
+      </div>
+    </div>
+
+    <div class="card card-accent-purple">
+      <h3 style="margin-top:0">🔬 Exercise 2: Observe Auto-Configuration Report</h3>
+      <p>Aktifkan debug mode dan lihat apa yang Spring Boot auto-configure.</p>
+      <div class="code-block" style="margin:8px 0 0">
+        <div class="code-header"><span class="code-filename">application.properties</span><span class="code-lang">PROPERTIES</span></div>
+        <div class="code-body"><span class="prop">debug</span>=<span class="str">true</span>
+<span class="cmt"># Perhatikan bagian "CONDITIONS EVALUATION REPORT" di console
+# Cari WebMvcAutoConfiguration → kenapa ia aktif?
+# Cari DataSourceAutoConfiguration → kenapa ia TIDAK aktif?</span></div>
+      </div>
+    </div>
+
+    <div class="card card-accent-green">
+      <h3 style="margin-top:0">🔬 Exercise 3: Exclude Auto-Configuration</h3>
+      <p>Coba exclude WebMvcAutoConfiguration dan lihat apa yang terjadi.</p>
+      <div class="code-block" style="margin:8px 0 0">
+        <div class="code-header"><span class="code-filename">HelloApplication.java</span><span class="code-lang">JAVA</span></div>
+        <div class="code-body"><span class="ann">@SpringBootApplication</span>(
+    <span class="prop">exclude</span> = {<span class="cls">WebMvcAutoConfiguration</span>.<span class="kw">class</span>}
+)
+<span class="kw">public class</span> <span class="cls">HelloApplication</span> { ... }
+
+<span class="cmt">// Apa yang terjadi? → App jalan, tapi endpoint kamu tidak akan merespons
+// Ini membuktikan WebMvcAutoConfiguration yang setup DispatcherServlet</span></div>
+      </div>
+    </div>
+
+    <div class="card card-accent-blue">
+      <h3 style="margin-top:0">🔬 Exercise 4: Custom @Value dari Properties</h3>
+      <p>Tambah properti kustom dan baca dari controller.</p>
+      <div class="code-block" style="margin:8px 0 0">
+        <div class="code-header"><span class="code-filename">application.properties</span><span class="code-lang">PROPERTIES</span></div>
+        <div class="code-body"><span class="prop">app.author</span>=<span class="str">Nama Kamu</span>
+<span class="prop">app.version</span>=<span class="num">1.0.0</span></div>
+      </div>
+      <div class="code-block" style="margin:8px 0 0">
+        <div class="code-header"><span class="code-filename">HelloController.java — tambahkan endpoint baru</span><span class="code-lang">JAVA</span></div>
+        <div class="code-body"><span class="ann">@Value</span>(<span class="str">"${app.author}"</span>)
+<span class="kw">private</span> <span class="cls">String</span> author;
+
+<span class="ann">@Value</span>(<span class="str">"${app.version}"</span>)
+<span class="kw">private</span> <span class="cls">String</span> version;
+
+<span class="ann">@GetMapping</span>(<span class="str">"/info"</span>)
+<span class="kw">public</span> <span class="cls">String</span> info() {
+    <span class="kw">return</span> <span class="str">"App v"</span> + version + <span class="str">" by "</span> + author;
+}</div>
+      </div>
+    </div>
+
+    <h3>Checklist Hari Ini</h3>
+    <ul class="checklist" id="checklist">
+      <li onclick="this.classList.toggle('done')">Paham perbedaan Spring vs Spring Boot</li>
+      <li onclick="this.classList.toggle('done')">Paham cara kerja Auto-Configuration dengan @Conditional</li>
+      <li onclick="this.classList.toggle('done')">Paham apa itu Starter Projects dan BOM</li>
+      <li onclick="this.classList.toggle('done')">Generate proyek lewat Spring Initializr</li>
+      <li onclick="this.classList.toggle('done')">Memahami setiap file dalam struktur proyek</li>
+      <li onclick="this.classList.toggle('done')">Berhasil run Hello World REST API</li>
+      <li onclick="this.classList.toggle('done')">Menyelesaikan minimal 2 dari 4 exercise</li>
+    </ul>
+    <p style="font-size:13px; color:var(--text-dim); margin-top:8px">Klik item untuk menandai selesai ✓</p>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz">
+    <p class="quiz-q">🧠 Final Check: Apa yang terjadi jika kamu menghapus <code>spring-boot-starter-parent</code> dari pom.xml?</p>
+    <ul class="quiz-opts" id="q2">
+      <li><label><input type="radio" name="q2" value="a"> Aplikasi tidak akan compile sama sekali</label></li>
+      <li><label><input type="radio" name="q2" value="b"> Kamu harus menentukan versi setiap dependency secara manual, dan berisiko terjadi version conflict</label></li>
+      <li><label><input type="radio" name="q2" value="c"> Auto-configuration tidak akan bekerja lagi</label></li>
+      <li><label><input type="radio" name="q2" value="d"> Tidak ada efek, parent POM opsional</label></li>
+    </ul>
+    <button class="quiz-btn" onclick="checkQuiz('q2','b','✅ Benar! Parent POM mengelola version management (BOM). Tanpa ini, kamu harus tulis versi sendiri untuk semua library dan rawan konflik.')">Cek Jawaban</button>
+    <div class="quiz-result" id="q2-result"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SUMMARY -->
+  <div class="card" style="background: linear-gradient(135deg, rgba(0,212,170,0.05), rgba(124,92,191,0.05)); border-color: rgba(0,212,170,0.2);">
+    <h3 style="margin-top:0; color: var(--accent)">📌 Ringkasan Day 1</h3>
+    <p><strong>Spring Boot</strong> bukan magic — ia adalah sistem yang cerdas berbasis <code>@Conditional</code>: konfigurasi hanya aktif jika kondisi terpenuhi (class ada di classpath, bean belum ada, dll).</p>
+    <p><strong>Auto-configuration</strong> bekerja lewat ratusan class di <code>AutoConfiguration.imports</code>, masing-masing dilindungi <code>@ConditionalOnClass</code>, <code>@ConditionalOnMissingBean</code>, dll.</p>
+    <p><strong>Starter Projects</strong> adalah kumpulan dependency yang dikurasi dengan versi kompatibel, dikelola lewat Spring Boot BOM di parent POM.</p>
+    <p style="margin:0"><strong>Kamu selalu bisa override</strong> auto-configuration: daftarkan bean sendiri, dan Spring Boot akan mundur karena <code>@ConditionalOnMissingBean</code>.</p>
+  </div>
+
+  <div class="box box-success" style="margin-top:20px">
+    <span class="box-label">✅ HARI BERIKUTNYA</span>
+    Day 2: Spring MVC deep dive — DispatcherServlet, Handler Mapping, Controllers, Request Lifecycle. Kita akan trace request dari browser sampai response JSON dikembalikan, baris per baris.
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>Spring Boot Learning Path · Day 1 of N</span>
+  <span style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size:12px">Made to understand, not just to run</span>
+</div>
+
+<script>
+  function toggleCollapse(btn) {
+    btn.classList.toggle('open');
+    const content = btn.nextElementSibling;
+    content.classList.toggle('show');
+  }
+
+  function checkQuiz(qId, correct, explanation) {
+    const selected = document.querySelector(`input[name="${qId}"]:checked`);
+    const resultEl = document.getElementById(`${qId}-result`);
+    if (!selected) { alert('Pilih jawaban dulu!'); return; }
+    resultEl.style.display = 'block';
+    if (selected.value === correct) {
+      resultEl.className = 'quiz-result correct';
+      resultEl.textContent = explanation;
+    } else {
+      resultEl.className = 'quiz-result wrong';
+      resultEl.textContent = '❌ Belum tepat. ' + explanation;
+    }
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const correct = document.querySelectorAll('.quiz-result.correct').length;
+    const total = 2;
+    const pct = Math.round((correct / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+
+  // Smooth scroll for TOC pills
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
