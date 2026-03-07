@@ -1,3 +1,9 @@
 spring:
   application:
     name: fundamental-spring-boot
+
+app:
+  name: "MrBista-Foundation-App"
+  version: 1
+  greeting-hello: "Hai Dunia"
+
