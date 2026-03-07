@@ -24,6 +24,7 @@ class FundamentalSpringBootApplicationTests {
 		assertEquals("MrBista-Foundation-App", config.getName());
 		assertTrue( config.getVersion() > 0);
 		assertEquals("Hai Dunia", config.getGreetingHello());
+		assertEquals(20, config.getFeature().getMaxUsers());
 
 
 	}

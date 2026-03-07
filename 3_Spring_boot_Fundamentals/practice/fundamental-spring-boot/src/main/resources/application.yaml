@@ -6,4 +6,7 @@ app:
   name: "MrBista-Foundation-App"
   version: 1
   greeting-hello: "Hai Dunia"
+  feature:
+    max-users: 20
+    regis-with-email-avail: true
 
