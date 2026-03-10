@@ -1,5 +1,6 @@
 package com.bisma.foundation.practice_materi_4_7.services;
 
+import com.bisma.foundation.practice_materi_4_7.dto.UserReqDTO;
 import com.bisma.foundation.practice_materi_4_7.dto.UserResponseDTO;
 import com.bisma.foundation.practice_materi_4_7.entity.User;
 import com.bisma.foundation.practice_materi_4_7.maper.UserMapper;
@@ -22,26 +23,44 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<UserResponseDTO> findAllUsers() {
-        return List.of();
+
+
+        return userMapper.toResponseList(userRepository.findAll());
     }
 
     @Override
     public UserResponseDTO findUserById(Long id) {
-        return null;
+
+
+        return userMapper.toResponse(userRepository.findById(id));
     }
 
     @Override
-    public UserResponseDTO saveUser(User user) {
-        return null;
+    public UserResponseDTO saveUser(UserReqDTO user) {
+
+        User userEntity = userMapper.toEntity(user);
+
+
+        return userMapper
+                .toResponse(userRepository.create(userEntity));
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(UserReqDTO user, Long id) {
 
+        if (id == null) {
+            throw new IllegalArgumentException("Id harus diisi");
+        }
+
+        User toUserEntity = userMapper.toEntity(user);
+
+        toUserEntity.setId(id);
+        userRepository.update(toUserEntity);
     }
 
     @Override
     public void deleteUserById(Long id) {
 
+        userRepository.deleteById(id);
     }
 }

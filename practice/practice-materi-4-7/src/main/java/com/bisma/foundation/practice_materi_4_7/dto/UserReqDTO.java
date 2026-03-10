@@ -11,5 +11,6 @@ public record UserReqDTO(@NotBlank String username,
                          @NotBlank String email,
                          @NotEmpty String password,
                          int age,
-                         @Past Date birthDate) {
+                         @Past Date birthDate,
+                         Long id) {
 }

@@ -5,6 +5,7 @@ import com.bisma.foundation.practice_materi_4_7.dto.UserReqDTO;
 import com.bisma.foundation.practice_materi_4_7.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,33 +22,44 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<?>> findAllUsers() {
-        return null;
+        return ResponseEntity.ok(
+                ApiResponse.success(userService.findAllUsers())
+        );
     }
 
 
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createUser(@Valid  @RequestBody UserReqDTO userReqDTO) {
-
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(userService.saveUser(userReqDTO)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateUser(@Valid  @RequestBody UserReqDTO userReqDTO, @PathVariable Long id) {
 
-        return null;
+        userService.updateUser(userReqDTO, id);
+
+        return ResponseEntity
+                .ok(ApiResponse.success(true));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteUser(@Valid  @RequestBody UserReqDTO userReqDTO, @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable Long id) {
 
-        return null;
+        userService.deleteUserById(id);
+
+        return ResponseEntity.ok(ApiResponse.success(true));
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getUserById(@PathVariable Long id) {
-        return null;
+        return ResponseEntity
+                .ok(
+                        ApiResponse.success(userService.findUserById(id))
+                );
     }
 
 
