@@ -27,7 +27,7 @@ public class ControllerErrorHandlerAdvice {
         );
 
         problemDetail.setProperty("errorCode", ex.getErrorCode());
-        problemDetail.setProperty("traceId", MDC.get("traceId"));
+        problemDetail.setProperty("traceId", MDC.get("requestId"));
         problemDetail.setProperty("timestamp", Instant.now().toString());
 
         return ResponseEntity
@@ -44,7 +44,7 @@ public class ControllerErrorHandlerAdvice {
         );
 
         problemDetail.setProperty("errorCode", ex.getErrorCode());
-        problemDetail.setProperty("traceId", MDC.get("traceId"));
+        problemDetail.setProperty("traceId", MDC.get("requestId"));
         problemDetail.setProperty("timestamp", Instant.now().toString());
 
         return ResponseEntity
