@@ -3,6 +3,7 @@ package com.bisma.foundation.practice_materi_4_7.services;
 import com.bisma.foundation.practice_materi_4_7.dto.UserReqDTO;
 import com.bisma.foundation.practice_materi_4_7.dto.UserResponseDTO;
 import com.bisma.foundation.practice_materi_4_7.entity.User;
+import com.bisma.foundation.practice_materi_4_7.exceptions.BadRequestException;
 import com.bisma.foundation.practice_materi_4_7.maper.UserMapper;
 import com.bisma.foundation.practice_materi_4_7.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService{
     public void updateUser(UserReqDTO user, Long id) {
 
         if (id == null) {
-            throw new IllegalArgumentException("Id harus diisi");
+            throw new BadRequestException("Id harus diisi");
         }
 
         User toUserEntity = userMapper.toEntity(user);
@@ -60,6 +61,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteUserById(Long id) {
+
+        userRepository.findById(id);
 
         userRepository.deleteById(id);
     }

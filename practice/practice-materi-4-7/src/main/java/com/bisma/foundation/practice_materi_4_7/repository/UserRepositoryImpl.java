@@ -1,6 +1,8 @@
 package com.bisma.foundation.practice_materi_4_7.repository;
 
 import com.bisma.foundation.practice_materi_4_7.entity.User;
+import com.bisma.foundation.practice_materi_4_7.exceptions.BadRequestException;
+import com.bisma.foundation.practice_materi_4_7.exceptions.NotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository{
                 .stream()
                 .filter(val -> val.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("user not found"));
+                .orElseThrow(() -> new NotFoundException("user not found"));
     }
 
     @Override
@@ -88,7 +90,7 @@ public class UserRepositoryImpl implements UserRepository{
 
     private void validateUserId(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("Id harus diisi");
+            throw new BadRequestException("Id harus diisi");
         }
     }
 }
