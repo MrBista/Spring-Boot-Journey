@@ -16,7 +16,19 @@ public class ProductRepositoryImpl implements ProductRepository{
 
     @Override
     public List<Product> findAll() {
-        return List.of();
+        String sql = """
+                select id, name, description, stock, sku, category_id, price, status from products;
+                """;
+
+        return namedParameterJdbcTemplate.query(sql, ((rs, rowNum) -> {
+            Product product = new Product();
+            product.setId(rs.getLong("id"));
+            product.setName(rs.getString("name"));
+            product.setSku(rs.getString("sku"));
+            product.setCategoryId(rs.getLong("category_id"));
+            product.setStatus(rs.getLong("status"));
+            return product;
+        } ));
     }
 
     @Override
