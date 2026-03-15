@@ -1,3 +1,19 @@
 spring:
   application:
     name: learn-jdbc
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/main_d
+    username: user2308
+    password: password_rahasia
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10           # maksimal 10 koneksi bersamaan
+      minimum-idle: 5                 # minimal 5 koneksi siap
+      connection-timeout: 30000       # timeout koneksi 30 detik
+      idle-timeout: 600000            # tutup koneksi idle setelah 10 menit
+
+
+  sql:
+    init:
+      mode: never
