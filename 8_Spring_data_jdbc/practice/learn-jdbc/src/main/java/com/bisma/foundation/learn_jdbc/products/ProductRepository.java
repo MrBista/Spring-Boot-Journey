@@ -13,8 +13,9 @@ public interface ProductRepository extends ListCrudRepository<Product, Long> {
     @Modifying
     Product save(Product product);
     void update(Product product);
-    void deleteById(Long id);
     void delete(Product product);
+
+    Product findByName(String name);
 
 
 }

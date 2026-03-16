@@ -58,4 +58,20 @@ public class ProductRepositoryTest {
         assertNotNull(productInserted.getId());
         System.out.println("data inserted " + productInserted.toString());
     }
+
+
+    @Test
+    void testDeleteByIdProduct() {
+        Long idToDeleted = 1L;
+        Product product = productRepository.findById(idToDeleted).orElseThrow(() -> new ResourceNotFound("product not found"));
+
+        productRepository.deleteById(product.getId());
+    }
+
+    @Test
+    void testSearchByName() {
+        Product product = productRepository.findByName("barabara");
+
+        System.out.println(product.toString());
+    }
 }
