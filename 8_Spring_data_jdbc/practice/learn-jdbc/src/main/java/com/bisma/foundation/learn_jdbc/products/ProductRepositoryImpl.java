@@ -1,6 +1,7 @@
 package com.bisma.foundation.learn_jdbc.products;
 
 import com.bisma.foundation.learn_jdbc.exception.BadRequest;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,10 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
-public class ProductRepositoryImpl implements ProductRepository{
+public class ProductRepositoryImpl implements ProductQueryRepository{
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public ProductRepositoryImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -39,20 +41,20 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
-    public Product findById(Long id) {
+    public Optional<Product> findById(Long id) {
         String sql = """
                 select id, name, description, stock, sku, category_id, price, status\s
                 from products
                 where id = :id;
                \s""";
 
-        return namedParameterJdbcTemplate
-                .queryForObject(sql, new MapSqlParameterSource("id", id), this::mapToProduct)
+        return Optional.ofNullable(namedParameterJdbcTemplate
+                .queryForObject(sql, new MapSqlParameterSource("id", id), this::mapToProduct))
                 ;
     }
 
     @Override
-    public void save(Product product) {
+    public Product saveProduct(Product product) {
         String sql = """
                 insert into products (name, description, stock, sku, category_id, price, status)\s
                 values(:name, :description, :stock, :sku, :categoryId, :price, :status)
@@ -76,6 +78,8 @@ public class ProductRepositoryImpl implements ProductRepository{
             throw new BadRequest("no value inserted to db");
         }
         product.setId(keyHolderVal.getId());
+
+        return  product;
     }
 
     @Override

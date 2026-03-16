@@ -3,7 +3,7 @@ spring:
     name: learn-jdbc
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/main_d
+    url: jdbc:postgresql://localhost:5432/main_db
     username: user2308
     password: password_rahasia
     driver-class-name: org.postgresql.Driver
