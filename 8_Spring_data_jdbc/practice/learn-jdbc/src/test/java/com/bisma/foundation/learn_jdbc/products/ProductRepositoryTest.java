@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -74,4 +77,21 @@ public class ProductRepositoryTest {
 
         System.out.println(product.toString());
     }
+
+    @Test
+    void testPageable() {
+        Pageable page = PageRequest.of(1, 10);
+
+        Page<Product> pageProduct = productRepository.findAll(page);
+
+        assertNotNull(pageProduct);
+        System.out.println(Arrays.toString(pageProduct.stream().toArray()));
+        System.out.println("total elements: " + pageProduct.getTotalElements());
+        System.out.println(Arrays.toString(pageProduct.get().toArray()));
+
+        pageProduct.stream().forEach(System.out::println);
+    }
+
+
+
 }
