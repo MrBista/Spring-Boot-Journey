@@ -10,5 +10,6 @@ public interface CategoryRepository extends ListCrudRepository<Category, Long>,
         PagingAndSortingRepository<Category, Long> {
 
     Page<Category> findByName(String name, Pageable page);
+    Page<Category> findAll(Pageable page);
 
 }
